@@ -20,5 +20,14 @@ rm -rf node_modules
 step-6:
 npm i
 
-step-7
+step-7:
 npm start
+
+step-8:
+npm i -D lint-staged
+
+step-9:
+
+
+
+
