@@ -24,5 +24,3 @@ bootstrap().then(() => {
         (<any>window).appBootstrap();
     }
 });
-
-haha
