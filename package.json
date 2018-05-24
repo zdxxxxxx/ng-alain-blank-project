@@ -81,7 +81,7 @@
             "editorconfig-tools fix",
             "git add"
         ],
-        "[^.spec].ts": [
+        "*.ts": [
             "npm run lint:ts",
             "prettier --write",
             "git add"
