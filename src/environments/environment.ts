@@ -3,9 +3,9 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  SERVER_URL: `./`,
-  production: false,
-  useHash: true,
+    SERVER_URL: `./`,
+    production: false,
+    useHash: false,
 };
 
 /*
@@ -15,4 +15,3 @@ export const environment = {
  * because it will have performance impact when throw error
  */
 // import 'zone.js/dist/zone-error';  // Included with Angular CLI.
-
