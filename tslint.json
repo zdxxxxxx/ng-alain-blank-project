@@ -17,8 +17,7 @@
         "eofline": true,
         "forin": false,
         "import-blacklist": [
-            true,
-            "rxjs/Rx"
+            true
         ],
         "import-spacing": true,
         "indent": [
@@ -90,7 +89,8 @@
         "radix": true,
         "semicolon": [
             true,
-            "always"
+            "always",
+            "ignore-bound-class-methods"
         ],
         "triple-equals": [
             true,

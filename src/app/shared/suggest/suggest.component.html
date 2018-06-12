@@ -1,0 +1,19 @@
+<span [ngStyle]="{display:'inline-block',width:width?width+'px':'100%'}">
+    <nz-select nzAllowClear="allowClear"
+               [nzPlaceHolder]="placeholder"
+               nzKeepUnListOptions
+               [nzMode]="mode"
+               [nzSize]="size"
+               (nzOnSearch)="searchChange($event)"
+               (ngModelChange)="change($event)"
+               nzShowSearch
+               [nzServerSearch]="true"
+               style="width: 100%"
+               [(ngModel)]="_value"
+               [ngClass]="loading?'suggest-loading':''"
+    >
+        <nz-option *ngFor="let option of searchOptions" [nzLabel]="option.name+'('+option.value+')'"
+                   [nzValue]="option">
+        </nz-option>
+    </nz-select>
+</span>

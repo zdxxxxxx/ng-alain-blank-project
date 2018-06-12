@@ -1,0 +1,195 @@
+@background-image-iphone: '/assets/iphone.png';
+@percent: 0.8; //显示缩放比
+
+@icon-size: 20px * @percent;
+@img-size: 36px * @percent;
+@img-text-margin: 23px * @percent;
+@font-size: 15px * @percent;
+@font-size-app: 13px * @percent;
+@line-height: 18px * @percent;
+/*
+    @width:设备宽度
+    @height:设备高度
+    @padding-lr:设备内边距(左右)
+    @background-image-url:设备背景图片
+*/
+.device(@width,@height,@padding-lr,@background-image-url) {
+    width: @width;
+    height: @height;
+    background-image: url(@background-image-url);
+    padding: 10px * @percent @padding-lr;
+}
+
+/*
+    @width:设备宽度
+    @padding-lr:设备内边距(左右)
+    @message-box-background:消息块儿背景
+    @message-box-border-radius:消息块儿圆角
+    @message-box-padding:消息块内边距
+*/
+.message-box(@width,@padding-lr,@message-box-background,@message-box-border-radius,@message-box-padding,@message-box-top) {
+    .message-box {
+        @curWidth: @width - 2 * @padding-lr;
+        width: @curWidth;
+        background: @message-box-background;
+        border-radius: @message-box-border-radius;
+        position: relative;
+        box-sizing: border-box;
+        top: @message-box-top;
+        padding: @message-box-padding;
+    }
+}
+
+.message-header() {
+    .message-header {
+        .message-header-icon {
+            width: @icon-size;
+            height: @icon-size;
+            img {
+                width: @icon-size;
+                height: @icon-size;
+            }
+        }
+        .message-header-app-name {
+            font-size: @font-size-app;
+            margin-left: 5px;
+        }
+    }
+}
+
+.message-body(@width:auto,@padding:2) {
+    .message-body {
+        padding: @padding;
+
+        .message-body-content {
+            .message-body-left {
+                width: @width - @img-text-margin - @img-size;
+                margin-right: @img-text-margin;
+            }
+            .message-body-title {
+                word-break: break-all;
+                font-weight: bold;
+                font-size: @font-size;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                overflow: hidden;
+            }
+            .message-body-text {
+                word-break: break-all;
+                font-size: @font-size;
+                line-height: @line-height;
+                overflow: hidden; //必须
+                display: -webkit-box; //必须
+                -webkit-line-clamp: 3; //必须
+                -webkit-box-orient: vertical; //必须
+            }
+            .message-body-img {
+                width: @img-size;
+                height: @img-size;
+                img {
+                    width: @img-size;
+                    height: @img-size;
+                }
+            }
+        }
+        .no-img-content {
+            .message-body-left {
+                width: @width;
+                margin-right: 0;
+            }
+            .message-body-img {
+                display: none;
+            }
+        }
+    }
+}
+
+.device {
+    .device-screen {
+        background-color: #000;
+        position: relative;
+        box-sizing: border-box;
+        background-clip: border-box;
+        background-size: cover;
+    }
+    .iphone7 {
+        @width: 375px * @percent;
+        @height: 667px * @percent;
+        @padding-lr: 8px * @percent;
+        @border-radius: 10px * @percent;
+        @message-box-border-radius: 10px * @percent;
+        @message-box-padding: 10px * @percent;
+        @message-box-background: rgba(255, 255, 255, 0.6);
+        @message-body-padding: 2px * @percent;
+        @message-box-top: 200px * @percent;
+        .device(@width, @height, @padding-lr, @background-image-iphone);
+        .message-box(
+            @width,
+            @padding-lr,
+            @message-box-background,
+            @message-box-border-radius,
+            @message-box-padding,
+            @message-box-top
+        );
+        .message-header();
+        .message-body(
+            @width - 2 * @padding-lr - 2 * @message-box-padding - 2 *
+                @message-body-padding,
+            @message-body-padding
+        );
+    }
+    .iphone7-plus {
+        @width: 414px * @percent;
+        @height: 736px * @percent;
+        @padding-lr: 8px * @percent;
+        @border-radius: 10px * @percent;
+        @message-box-border-radius: 10px * @percent;
+        @message-box-padding: 10px * @percent;
+        @message-box-background: rgba(255, 255, 255, 0.6);
+        @message-body-padding: 2px * @percent;
+        @message-box-top: 200px * @percent;
+        .device(@width, @height, @padding-lr, @background-image-iphone);
+        .message-box(
+            @width,
+            @padding-lr,
+            @message-box-background,
+            @message-box-border-radius,
+            @message-box-padding,
+            @message-box-top
+        );
+        .message-header();
+        .message-body(
+            @width - 2 * @padding-lr - 2 * @message-box-padding - 2 *
+                @message-body-padding,
+            @message-body-padding
+        );
+    }
+    .iphone8 {
+    }
+    .part {
+        @width: 375px * @percent;
+        @height: auto;
+        @padding-lr: 8px * @percent;
+        @border-radius: 10px * @percent;
+        @message-box-border-radius: 10px * @percent;
+        @message-box-padding: 10px * @percent;
+        @message-box-background: rgba(255, 255, 255, 0.6);
+        @message-body-padding: 2px * @percent;
+        @message-box-top: 0;
+        .device(@width, @height, @padding-lr, @background-image-iphone);
+        .message-box(
+            @width,
+            @padding-lr,
+            @message-box-background,
+            @message-box-border-radius,
+            @message-box-padding,
+            @message-box-top
+        );
+        .message-header();
+        .message-body(
+            @width - 2 * @padding-lr - 2 * @message-box-padding - 2 *
+                @message-body-padding,
+            @message-body-padding
+        );
+    }
+}

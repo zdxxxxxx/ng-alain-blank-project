@@ -1,0 +1,27 @@
+<nz-popover [nzTrigger]="'click'" [(nzVisible)]="visible">
+
+    <button nz-button nz-popover [disabled]="disabled" (click)="prevent($event)"><i class="anticon anticon-smile-o"></i></button>
+    <ng-template #nzTemplate>
+        <div style="margin-bottom: 10px" *ngIf="openCommon">
+            <div nz-row nzType="flex">
+                常用
+            </div>
+            <div nz-row nzType="flex" class="emoji-contain-freq">
+                <div *ngIf="!_common_emoji.length" style="color:rgba(0,0,0,.45);text-align: center;width: 100%">暂无常用表情</div>
+                <div nz-col nzSpan="2" *ngFor="let e of _common_emoji" class="emoji" (click)="chooseEmoji(e)">
+                    {{e.emoji}}
+                </div>
+            </div>
+        </div>
+        <div>
+            <div nz-row nzType="flex">
+                全部
+            </div>
+            <div nz-row nzType="flex" class="emoji-contain">
+                <div nz-col nzSpan="2" *ngFor="let e of Emoji" class="emoji" (click)="chooseEmoji(e)">
+                    {{e.emoji}}
+                </div>
+            </div>
+        </div>
+    </ng-template>
+</nz-popover>

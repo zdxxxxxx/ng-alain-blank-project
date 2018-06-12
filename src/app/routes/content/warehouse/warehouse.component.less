@@ -1,0 +1,244 @@
+.nrk-main {
+    overflow-y: scroll;
+    position: relative;
+    margin: 0 -24px;
+
+    .nrk-body {
+        margin: 10px;
+        .search-bar {
+            text-align: center;
+            padding-top: 5px;
+            background: #ffffff;
+        }
+        .data-container {
+            margin-top: 10px;
+            .data-block {
+                background: #ffffff;
+            }
+            .data-title {
+                padding: 10px;
+            }
+            .data-item-container {
+                padding: 10px;
+                margin-bottom: 10px;
+                .data-item {
+                    width: 330px;
+                    > .ant-badge {
+                        width: 100%;
+                    }
+                    .data-item-preview {
+                        margin-bottom: 5px;
+                    }
+                    .data-item-info {
+                        font-size: 12px;
+                        margin-bottom: 5px;
+                    }
+                    .data-item-usage {
+                        margin-bottom: 5px;
+                    }
+                    .data-item-action {
+                    }
+                    .badge-icon {
+                        position: absolute;
+                        bottom: 0;
+                        right: 10px;
+                        z-index: 10;
+                        font-size: 52px;
+                        opacity: 0.5;
+                        .success {
+                            color: #00a854;
+                        }
+                        .fail {
+                            color: #f04134;
+                        }
+                    }
+                    ::ng-deep {
+                        .ant-card {
+                            position: relative;
+                            &:hover {
+                                -webkit-box-shadow: 0 1px 6px rgba(0, 0, 0, 0.2);
+                                box-shadow: 0 1px 6px rgba(0, 0, 0, 0.2);
+                                border-color: rgba(0, 0, 0, 0.2);
+                            }
+                        }
+                        .ant-card-body {
+                            padding: 10px;
+                        }
+                    }
+                }
+                .data-item.data-item-success {
+                    ::ng-deep {
+                        .ant-card {
+                            border-color: #00a854;
+                        }
+                    }
+                }
+                .data-item.data-item-fail {
+                    ::ng-deep {
+                        .ant-card {
+                            border-color: #f04134;
+                        }
+                    }
+                }
+            }
+        }
+        .filter-container {
+            padding: 10px;
+            background: #ffffff;
+            .filter-row {
+                padding: 5px;
+                margin-bottom: 5px;
+                border-bottom: 1px dashed #e8e8e8;
+                .filter-title {
+                    text-align: left;
+                    font-size: 12px;
+                    width: 80px;
+                }
+
+                .filter-item {
+                    display: inline-block;
+                    padding: 5px;
+                    text-align: center;
+                    font-size: 12px;
+                    cursor: pointer;
+                    &:hover {
+                        color: #108ee9;
+                    }
+                }
+                .filter-item.filter-item-active {
+                    color: #108ee9;
+                }
+                .filter-action {
+                    font-size: 12px;
+                    position: absolute;
+                    right: 10px;
+                    text-align: right;
+                }
+                ::ng-deep {
+                    .ant-select {
+                        font-size: 12px;
+                    }
+                    .ant-tag {
+                        font-size: 12px;
+                    }
+                }
+            }
+            .filter-view {
+                min-height: 40px;
+                padding: 5px;
+                position: relative;
+                .filter-title {
+                    text-align: left;
+                    font-size: 12px;
+                    width: 80px;
+                }
+                .filter-action {
+                    font-size: 12px;
+                    text-align: right;
+                    position: absolute;
+                    right: 0;
+                    .action-item {
+                        margin-left: 5px;
+                    }
+                }
+                ::ng-deep {
+                    .ant-tag {
+                        font-size: 12px;
+                    }
+                }
+            }
+            .filter-row.last {
+                border: none;
+                margin-bottom: 0;
+            }
+        }
+        .page-content {
+            background: #ffffff;
+            padding: 5px;
+            text-align: right;
+            margin-top: -10px;
+        }
+    }
+    .nrk-header {
+        margin: 0 0 10px 0;
+        z-index: 2;
+        ::ng-deep {
+            .ant-breadcrumb {
+                margin: 0;
+            }
+        }
+    }
+
+    .panel-body {
+        padding: 10px;
+        .data-mdd-list {
+            ::ng-deep {
+                .ant-card-body {
+                    padding: 0 24px 20px 24px;
+                    height: 409px;
+                }
+            }
+        }
+        .data-shape {
+            ::ng-deep {
+                .ant-card-body {
+                    padding: 24px 24px 20px 24px;
+                    height: 466px;
+                    overflow-y: scroll;
+                }
+                .ant-tag {
+                    font-size: 12px;
+                }
+            }
+            .mdd-list-item {
+                display: inline-block;
+                font-size: 12px;
+                background: #f3f3f3;
+                border-radius: 4px;
+                color: rgba(0, 0, 0, 0.65);
+                padding: 3px 8px;
+                margin-right: 8px;
+                margin-bottom: 8px;
+                text-align: center;
+                cursor: pointer;
+                opacity: 1;
+                transform: scale(1);
+            }
+            .mdd-list-item.active {
+                background: #108ee9;
+                color: #ffffff;
+            }
+        }
+
+        .bg-magenta {
+            background-color: #eb2f96 !important;
+        }
+        .mdd-list {
+            ul {
+                margin-top: 25px;
+            }
+            li {
+                zoom: 1;
+                margin-top: 16px;
+                display: flex;
+                justify-content: space-between;
+                .icon {
+                    background-color: #f5f5f5;
+                    border-radius: 20px;
+                    display: inline-block;
+                    font-size: 12px;
+                    font-weight: 600;
+                    margin-right: 24px;
+                    height: 20px;
+                    line-height: 20px;
+                    width: 20px;
+                    text-align: center;
+                }
+                .active {
+                    background-color: #314659;
+                    color: #fff;
+                }
+            }
+        }
+    }
+}

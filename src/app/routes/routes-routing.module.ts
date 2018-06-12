@@ -34,6 +34,11 @@ const routes: Routes = [
                 path: 'content',
                 loadChildren: './content/content.module#ContentModule',
             },
+            // 业务子模块
+            // {
+            //     path: 'test',
+            //     loadChildren: './test/test.module#TestModule',
+            // },
         ],
     },
     // 全屏布局

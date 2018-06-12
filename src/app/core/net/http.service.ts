@@ -5,7 +5,7 @@ import 'rxjs/add/operator/catch';
 import { Injectable, Injector } from '@angular/core';
 import { Observable, of, throwError } from 'rxjs';
 import { _HttpClient } from '@delon/theme';
-import { NzMessageService } from 'ng-zorro-antd';
+import { NzMessageService, NzNotificationService } from 'ng-zorro-antd';
 import { HttpHeaders } from '@angular/common/http';
 import { isObject } from 'util';
 
@@ -17,7 +17,11 @@ interface Res extends Object {
 
 @Injectable()
 export class HttpService {
-    constructor(private http: _HttpClient, private nzMsg: NzMessageService) {}
+    constructor(
+        private http: _HttpClient,
+        private nzMsg: NzMessageService,
+        private nzNotification: NzNotificationService,
+    ) {}
 
     static parseBody(param) {
         let paramStr = '';
@@ -64,9 +68,9 @@ export class HttpService {
         return url;
     }
 
-    private handleSuccess(data: Res | any) {
+    private handleSuccess = (data: Res | any) => {
         if (data instanceof Object) {
-            if (!data.code) {
+            if (!data.hasOwnProperty('code')) {
                 return data;
             }
             if (data.code === 0) {
@@ -76,9 +80,10 @@ export class HttpService {
                 this.nzMsg.create('error', data.message);
             }
         } else {
+            this.nzNotification.error('数据异常！', data);
             return { code: 10001, message: 'body is not Object', data: data };
         }
-    }
+    };
 
     get(url: string, params?: any): Observable<any> {
         return this.http.get(url, params).map(this.handleSuccess);

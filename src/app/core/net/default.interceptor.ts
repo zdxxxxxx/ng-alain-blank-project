@@ -13,7 +13,7 @@ import {
 } from '@angular/common/http';
 import { Observable, of, throwError } from 'rxjs';
 import { mergeMap, catchError } from 'rxjs/operators';
-import { NzMessageService } from 'ng-zorro-antd';
+import { NzMessageService, NzNotificationService } from 'ng-zorro-antd';
 import { _HttpClient } from '@delon/theme';
 import { environment } from '@env/environment';
 
@@ -26,6 +26,10 @@ export class DefaultInterceptor implements HttpInterceptor {
 
     get msg(): NzMessageService {
         return this.injector.get(NzMessageService);
+    }
+
+    get notification(): NzNotificationService {
+        return this.injector.get(NzNotificationService);
     }
 
     private goTo(url: string) {
@@ -65,7 +69,15 @@ export class DefaultInterceptor implements HttpInterceptor {
             case 403:
             case 404:
             case 500:
-                this.msg.create('error', '服务端异常，请稍后再试！');
+                if (event instanceof HttpResponse) {
+                    const body: any = event.body;
+                    this.notification.error('服务端异常', JSON.stringify(body));
+                } else if (event instanceof HttpErrorResponse) {
+                    this.notification.error(
+                        '服务端异常',
+                        JSON.stringify(event.error),
+                    );
+                }
                 break;
             default:
                 if (event instanceof HttpErrorResponse) {
@@ -98,6 +110,7 @@ export class DefaultInterceptor implements HttpInterceptor {
         const newReq = req.clone({
             url: url,
         });
+
         return next.handle(newReq).pipe(
             mergeMap((event: any) => {
                 // 允许统一对请求错误处理，这是因为一个请求若是业务上错误的情况下其HTTP请求的状态是200的情况下需要
