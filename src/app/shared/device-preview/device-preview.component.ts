@@ -8,7 +8,7 @@ import {
 } from '@angular/core';
 
 @Component({
-    selector: 'app-device-preview',
+    selector: 'device-preview',
     templateUrl: './device-preview.component.html',
     styleUrls: ['./device-preview.component.less'],
 })

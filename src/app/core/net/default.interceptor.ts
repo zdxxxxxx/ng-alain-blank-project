@@ -63,6 +63,12 @@ export class DefaultInterceptor implements HttpInterceptor {
                 //         return of(event);
                 //     }
                 // }
+                if (event instanceof HttpErrorResponse) {
+                    this.notification.error(
+                        '服务端异常',
+                        JSON.stringify(event.error),
+                    );
+                }
                 break;
             case 401: // 未登录状态码
                 break;
@@ -81,10 +87,7 @@ export class DefaultInterceptor implements HttpInterceptor {
                 break;
             default:
                 if (event instanceof HttpErrorResponse) {
-                    console.warn(
-                        '未可知错误，大部分是由于后端不支持CORS或无效配置引起',
-                        event,
-                    );
+                    console.warn('未知错误', event);
                     this.msg.error(event.message);
                 }
                 break;

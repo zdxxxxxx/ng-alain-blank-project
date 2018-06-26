@@ -72,7 +72,7 @@ const CONF = {
         "changeOrigin": true
     },
     "/push-api/material/*": {
-        "target": 'https://admin.pushlog.ab',
+        "target": 'https://admin.zdx.ab',
         "secure": false,
         "changeOrigin": true
     },

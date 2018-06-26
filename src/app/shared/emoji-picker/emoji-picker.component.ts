@@ -4,7 +4,7 @@ import { emoji } from './emoji';
 const KEY = '_COMMON_EMOJI';
 
 @Component({
-    selector: 'app-emoji-picker',
+    selector: 'emoji-picker',
     templateUrl: './emoji-picker.component.html',
     styleUrls: ['./emoji-picker.component.less'],
 })

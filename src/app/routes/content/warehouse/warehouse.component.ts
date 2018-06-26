@@ -2,12 +2,12 @@ import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ApiService } from '../api.service';
 import { HttpService } from '@core/net/http.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { CommonMessage } from '../../../../../../jsx/admin/src/app/core/services/common-message.service';
 import { NzMessageService } from 'ng-zorro-antd';
 import * as fns from 'date-fns';
 import { Location } from '@angular/common';
 import { Router } from '@angular/router';
 import { ReuseTabService } from '@delon/abc';
+import { CommonUtilsService } from '@core/utils/common-utils.service';
 
 @Component({
     selector: 'app-warehouse',
@@ -47,6 +47,7 @@ export class WarehouseComponent implements OnInit {
         mdd: null,
         contentType: null,
         status: null,
+        courseType: null,
     };
     searchType = [
         {
@@ -70,8 +71,9 @@ export class WarehouseComponent implements OnInit {
         contentType: '内容类型',
         status: '状态',
         mdd: '目的地',
+        courseType: '课程类型',
     };
-    contentTypeOptions: any = [{ description: '全部', key: '' }];
+    contentTypeOptions: any = [];
     statusOptions: any = [
         {
             name: '新弹药',
@@ -94,6 +96,48 @@ export class WarehouseComponent implements OnInit {
     filterView = {
         mdd: [],
         contentType: [],
+        courseType: [
+            {
+                name: '旅行中',
+                value: 1,
+                checked: false,
+            },
+            {
+                name: '出发前',
+                value: 2,
+                checked: false,
+            },
+            {
+                name: 'poi浏览触发',
+                value: 7,
+                checked: false,
+            },
+            {
+                name: '酒店浏览触发',
+                value: 8,
+                checked: false,
+            },
+            {
+                name: '机票预订',
+                value: 3,
+                checked: false,
+            },
+            {
+                name: '新用户课程',
+                value: 4,
+                checked: false,
+            },
+            {
+                name: '沉默用户',
+                value: 'recall',
+                checked: false,
+            },
+            {
+                name: '意向目的地',
+                value: 'intent',
+                checked: false,
+            },
+        ],
         status: [
             {
                 name: '全部',
@@ -126,6 +170,25 @@ export class WarehouseComponent implements OnInit {
         2: '行中',
     };
     initSuggestOptions = [];
+    disabledStartDate = startValue => {
+        if (!startValue || !this.validateForm.value.end) {
+            return false;
+        }
+        return (
+            fns.startOfDay(startValue).getTime() >=
+            fns.endOfDay(this.validateForm.value.end).getTime()
+        );
+    };
+
+    disabledEndDate = endValue => {
+        if (!endValue || !this.validateForm.value.start) {
+            return false;
+        }
+        return (
+            fns.endOfDay(endValue).getTime() <=
+            fns.startOfDay(this.validateForm.value.start).getTime()
+        );
+    };
 
     constructor(
         private api: ApiService,
@@ -133,40 +196,46 @@ export class WarehouseComponent implements OnInit {
         private cm: NzMessageService,
         private location: Location,
         private router: Router,
-        private reuseSerive: ReuseTabService,
+        private http: HttpService,
     ) {}
 
     ngOnInit() {
         this.initForm();
-        this.api.getTags().subscribe(data => {
-            this.contentTypeOptions = data[0].options;
-            this.filterView.contentType = data[0].options.map(item => {
-                return {
-                    name: item.description,
-                    value: item.key,
-                    checked: false,
-                };
-            });
-            this.getData();
-        });
+        this.api.getTags().subscribe(
+            data => {
+                this.contentTypeOptions = data[0].options;
+                this.filterView.contentType = data[0].options.map(item => {
+                    return {
+                        name: item.description,
+                        value: item.key,
+                        checked: false,
+                    };
+                });
+                this.getData();
+            },
+            err => {
+                console.log('error', err);
+            },
+        );
     }
 
     getData() {
         const params = this.getSearchParams();
-        // console.log(params);
-        // this.data = DATA.data.list;
-        // this.total = DATA.data.total;
-
         this.loading = true;
-        this.api.getMessages(params).subscribe(data => {
-            this.data = data.list;
-            this.total = data.total;
-            this.loading = false;
-        });
+        this.api.getMessages(params).subscribe(
+            data => {
+                this.data = data.list;
+                this.total = data.total;
+            },
+            () => {},
+            () => {
+                this.loading = false;
+            },
+        );
     }
 
     getSearchParams() {
-        const { key, value, mdd, status, contentType } = this.q;
+        const { key, value, mdd, status, contentType, courseType } = this.q;
         return {
             [key]: value,
             mdds: mdd ? mdd.map(item => item.value).join(',') : '',
@@ -174,8 +243,21 @@ export class WarehouseComponent implements OnInit {
             contentType: contentType
                 ? contentType.map(item => item.value).join(',')
                 : '',
+            courseType: courseType
+                ? courseType.map(item => item.value).join(',')
+                : '',
             ...this.pageOption,
         };
+    }
+
+    changeStatus(item, status) {
+        const params = { id: item.id, status };
+        this.api.changeStatus(params).subscribe(
+            data => {
+                this.cm.success('审核成功！');
+            },
+            () => {},
+        );
     }
 
     getKeys() {
@@ -189,6 +271,9 @@ export class WarehouseComponent implements OnInit {
         if (this.filterView.status.filter(item => item.checked).length) {
             arr.push('status');
         }
+        if (this.filterView.courseType.filter(item => item.checked).length) {
+            arr.push('courseType');
+        }
         return arr;
     }
 
@@ -196,19 +281,16 @@ export class WarehouseComponent implements OnInit {
         if (!msg) {
             this.validateForm = this.fb.group({
                 id: [],
-                msg_title: [null, [Validators.required]], // 消息标题
-                msg_content: [null, [Validators.required]], // 消息内容
+                msg_title: [null, []], // 消息标题
+                msg_content: [null, []], // 消息内容
                 url: [null, [Validators.required]], // 消息url
                 att_file: ['', []], //消息图片
                 mdd_select: [null, []],
-                content_type: [null, [Validators.required]],
+                content_type: [null, []],
                 usage_type: [null, []],
                 has_time_range: [false, []],
-                start: [fns.startOfDay(new Date()), [Validators.required]],
-                end: [
-                    fns.endOfDay(fns.addDays(new Date(), 6)),
-                    [Validators.required],
-                ],
+                start: [fns.startOfDay(new Date())],
+                end: [fns.endOfDay(fns.addDays(new Date(), 6))],
             });
         } else {
             const formData = this.buildFormData(msg, page);
@@ -226,25 +308,23 @@ export class WarehouseComponent implements OnInit {
             } = formData;
             this.validateForm = this.fb.group({
                 id: [id],
-                msg_title: [msg_title, [Validators.required]], // 消息标题
-                msg_content: [msg_content, [Validators.required]], // 消息内容
-                url: [url, [Validators.required]], // 消息url
+                msg_title: [msg_title, []], // 消息标题
+                msg_content: [msg_content, []], // 消息内容
+                url: [url, []], // 消息url
                 att_file: [att_file, []], //消息图片
                 mdd_select: [mdd_select, []],
-                content_type: [content_type, [Validators.required]],
+                content_type: [content_type, []],
                 usage_type: [usage_type, []],
                 has_time_range: [+valid_start_time !== 0, []],
                 start: [
                     +valid_start_time === 0
                         ? fns.startOfDay(new Date())
                         : new Date(+valid_start_time * 1000),
-                    [Validators.required],
                 ],
                 end: [
                     +valid_start_time === 0
                         ? fns.endOfDay(fns.addDays(new Date(), 6))
                         : new Date(+valid_end_time * 1000),
-                    [Validators.required],
                 ],
             });
         }
@@ -284,13 +364,7 @@ export class WarehouseComponent implements OnInit {
     }
 
     buildUrl(str) {
-        const strRegex = '^((https|http)?://)';
-        const re = new RegExp(strRegex);
-        if (re.test(str)) {
-            return str;
-        } else {
-            return 'http://' + str;
-        }
+        return CommonUtilsService.buildUrl(str);
     }
 
     selectEmoji(e) {
@@ -321,6 +395,34 @@ export class WarehouseComponent implements OnInit {
         this.q[key] = query_arr.length ? query_arr : null;
     }
 
+    search() {
+        this.pageOption.curPage = 1;
+        this.pageOption.offset = 0;
+        this.getData();
+    }
+
+    clearQuery() {
+        this.q = Object.assign({}, this.q, {
+            mdd: null,
+            contentType: null,
+            status: null,
+        });
+        this.filterView.mdd = [];
+        this.filterView.contentType.forEach(i => {
+            i.checked = false;
+        });
+        this.filterView.status.forEach(i => {
+            i.checked = false;
+        });
+        this.filterView.courseType.forEach(i => {
+            i.checked = false;
+        });
+    }
+
+    expendFilter() {
+        this.expend = !this.expend;
+    }
+
     onClose(val, key) {
         switch (key) {
             case 'mdd':
@@ -337,10 +439,16 @@ export class WarehouseComponent implements OnInit {
                 this.q.status = null;
                 this.filterView.status.forEach(item => (item.checked = false));
                 break;
+            case 'courseType':
+                this.q.courseType = null;
+                this.filterView.courseType.forEach(
+                    item => (item.checked = false),
+                );
+                break;
         }
     }
 
-    showActionModal(type, msg, page) {
+    showActionModal(type, msg?, page?) {
         this.modalType = type;
         this.initForm(msg, page);
         this.actionModalVisible = true;
@@ -355,19 +463,33 @@ export class WarehouseComponent implements OnInit {
         this.submitLoading = true;
 
         if (this.modalType === 'A') {
-            this.api.addMessage(postData).subscribe(data => {
-                this.handleCancel();
-                this.cm.create('success', '新增成功！');
-                this.getData();
-                this.submitLoading = false;
-            });
+            this.api.addMessage(postData).subscribe(
+                data => {
+                    this.handleCancel();
+                    this.cm.create('success', '新增成功！');
+                    this.getData();
+                },
+                err => {
+                    console.log(err);
+                },
+                () => {
+                    this.submitLoading = false;
+                },
+            );
         } else {
-            this.api.updateMessage(postData).subscribe(data => {
-                this.handleCancel();
-                this.cm.create('success', '修改成功！');
-                this.getData();
-                this.submitLoading = false;
-            });
+            this.api.updateMessage(postData).subscribe(
+                data => {
+                    this.handleCancel();
+                    this.cm.create('success', '修改成功！');
+                    this.getData();
+                },
+                err => {
+                    console.log(err);
+                },
+                () => {
+                    this.submitLoading = false;
+                },
+            );
         }
     }
 
@@ -434,5 +556,22 @@ export class WarehouseComponent implements OnInit {
         if (status === 2) {
             return 'data-item-fail';
         }
+    }
+
+    // suggest
+    fetchMdd(val) {
+        if (!val) return;
+        this.http
+            .get(`/mdd-api/search/suggest?limit=3&name=${val}`)
+            .subscribe((data: any) => {
+                this.searchOptions = data;
+            });
+    }
+
+    pageChange() {
+        this.dataBodyEl.nativeElement.scrollTop = 0;
+        this.pageOption.offset =
+            (this.pageOption.curPage - 1) * this.pageOption.count;
+        this.getData();
     }
 }

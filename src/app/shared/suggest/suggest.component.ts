@@ -1,10 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { Observable } from 'rxjs/Observable';
-import { debounceTime } from 'rxjs/operators/debounceTime';
-import { map } from 'rxjs/operators/map';
-import { switchMap } from 'rxjs/operators/switchMap';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { debounceTime, map, switchMap } from 'rxjs/operators';
 import { filter } from 'rxjs/internal/operators';
 
 interface ResStruct {
@@ -13,7 +10,7 @@ interface ResStruct {
 }
 
 @Component({
-    selector: 'app-suggest',
+    selector: 'suggest',
     templateUrl: './suggest.component.html',
     styleUrls: ['./suggest.component.less'],
 })

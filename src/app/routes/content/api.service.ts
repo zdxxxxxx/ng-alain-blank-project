@@ -18,14 +18,22 @@ export class ApiService {
         const url = `${this.prefixUrl}/warehouse/query_message_list.php`;
         return this.http.get(url, params);
     }
+
     // 新增弹药
     addMessage(data) {
         const url = `${this.prefixUrl}/warehouse/create_message.php`;
         return this.http.postForm(url, data);
     }
+
     // 更新弹药
     updateMessage(data) {
         const url = `${this.prefixUrl}/warehouse/create_message.php`;
         return this.http.postForm(url, data);
+    }
+
+    // 审核状态
+    changeStatus(params) {
+        const url = `${this.prefixUrl}/warehouse/audit_message.php`;
+        return this.http.postForm(url, { ...params });
     }
 }

@@ -11,7 +11,7 @@ import {
 import { FileUploader } from 'ng2-file-upload';
 
 @Component({
-    selector: 'app-custom-file-upload',
+    selector: 'custom-file-upload',
     templateUrl: './custom-file-upload.component.html',
     styleUrls: ['./custom-file-upload.less'],
 })

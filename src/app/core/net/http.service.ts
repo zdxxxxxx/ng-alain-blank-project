@@ -1,9 +1,7 @@
-import 'rxjs/add/operator/map';
-import 'rxjs/add/observable/from';
-import 'rxjs/add/operator/catch';
+import { map } from 'rxjs/operators';
 
-import { Injectable, Injector } from '@angular/core';
-import { Observable, of, throwError } from 'rxjs';
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
 import { _HttpClient } from '@delon/theme';
 import { NzMessageService, NzNotificationService } from 'ng-zorro-antd';
 import { HttpHeaders } from '@angular/common/http';
@@ -17,11 +15,7 @@ interface Res extends Object {
 
 @Injectable()
 export class HttpService {
-    constructor(
-        private http: _HttpClient,
-        private nzMsg: NzMessageService,
-        private nzNotification: NzNotificationService,
-    ) {}
+    constructor(private http: _HttpClient, private nzMsg: NzMessageService) {}
 
     static parseBody(param) {
         let paramStr = '';
@@ -68,25 +62,25 @@ export class HttpService {
         return url;
     }
 
-    private handleSuccess = (data: Res | any) => {
-        if (data instanceof Object) {
-            if (!data.hasOwnProperty('code')) {
-                return data;
-            }
-            if (data.code === 0) {
-                return data.data;
-            }
-            if (data.code !== 0) {
-                this.nzMsg.create('error', data.message);
-            }
-        } else {
-            this.nzNotification.error('数据异常！', data);
-            return { code: 10001, message: 'body is not Object', data: data };
+    private handleStatusOk(data: any): any | Observable<any> {
+        if (!data.hasOwnProperty('code')) {
+            return data;
         }
-    };
+        if (data.code === 0) {
+            return data.data;
+        }
+        if (data.code !== 0) {
+            this.nzMsg.create('error', data.message);
+            return Observable.create(ob => {
+                ob.error(data);
+            });
+        }
+    }
 
     get(url: string, params?: any): Observable<any> {
-        return this.http.get(url, params).map(this.handleSuccess);
+        return this.http
+            .get(url, params)
+            .pipe(map((data: any) => this.handleStatusOk(data)));
     }
 
     postForm(url: string, body: any, params?: any): Observable<any> {
@@ -101,6 +95,6 @@ export class HttpService {
         body = HttpService.parseBody(body);
         return this.http
             .post(url, body, params, options)
-            .map(this.handleSuccess);
+            .pipe(map((data: any) => this.handleStatusOk(data)));
     }
 }
