@@ -13,4 +13,26 @@ export class CommonUtilsService {
             return 'http://' + str;
         }
     }
+
+    static appendParam(url: string, name: string, value: string) {
+        if (url && name) {
+            name += '=';
+            if (url.indexOf(name) === -1) {
+                if (url.indexOf('?') !== -1) {
+                    url += '&';
+                } else {
+                    url += '?';
+                }
+                url += name + encodeURIComponent(value);
+            }
+        }
+        return url;
+    }
+
+    static createUrl(url, params) {
+        Object.keys(params).forEach(key => {
+            url = CommonUtilsService.appendParam(url, key, params[key]);
+        });
+        return url;
+    }
 }

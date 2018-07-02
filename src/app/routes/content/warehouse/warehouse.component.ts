@@ -290,7 +290,7 @@ export class WarehouseComponent implements OnInit {
                 usage_type: [null, []],
                 has_time_range: [false, []],
                 start: [fns.startOfDay(new Date())],
-                end: [fns.endOfDay(fns.addDays(new Date(), 6))],
+                end: [fns.endOfDay(fns.addMonths(new Date(), 6))],
             });
         } else {
             const formData = this.buildFormData(msg, page);
@@ -322,8 +322,8 @@ export class WarehouseComponent implements OnInit {
                         : new Date(+valid_start_time * 1000),
                 ],
                 end: [
-                    +valid_start_time === 0
-                        ? fns.endOfDay(fns.addDays(new Date(), 6))
+                    +valid_end_time === 0
+                        ? fns.endOfDay(fns.addMonths(new Date(), 6))
                         : new Date(+valid_end_time * 1000),
                 ],
             });
@@ -532,20 +532,6 @@ export class WarehouseComponent implements OnInit {
             ...time_range,
         };
         return postData;
-    }
-
-    getTimeDiff(exp: number) {
-        return Math.ceil((exp - new Date().getTime() / 1000) / (24 * 3600));
-    }
-
-    getDate(val) {
-        return fns.format(new Date(val * 1000), 'YYYY/MM/DD');
-    }
-
-    getUsageType(usage) {
-        return this.usageTypes.filter(item => {
-            return usage.includes(item.value);
-        });
     }
 
     getClass(item) {

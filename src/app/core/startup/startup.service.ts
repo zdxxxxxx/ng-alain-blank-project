@@ -3,12 +3,7 @@ import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { zip } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import {
-    MenuService,
-    SettingsService,
-    TitleService,
-    ALAIN_I18N_TOKEN,
-} from '@delon/theme';
+import { MenuService, SettingsService, TitleService } from '@delon/theme';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { ACLService } from '@delon/acl';
 
@@ -88,11 +83,127 @@ export class StartupService {
             {
                 text: '主导航',
                 group: true,
+                link: '/dashboard',
                 children: [
                     {
                         text: '仪表盘',
+                        icon: 'iconfont icon-yunying',
                         link: '/dashboard',
-                        icon: 'anticon anticon-appstore-o',
+                    },
+                ],
+            },
+            {
+                text: '推送任务',
+                group: true,
+                children: [
+                    {
+                        text: '运营推送',
+                        icon: 'iconfont icon-yunying',
+                        link: '/rule/task-spec',
+                        children: [
+                            {
+                                text: '推送列表',
+                                link: '/rule/task-list',
+                            },
+                            {
+                                text: '新建推送',
+                                link: '/rule/create-task',
+                            },
+                            {
+                                text: '推送测试',
+                                link: '/rule/task-spec',
+                            },
+                        ],
+                    },
+                    {
+                        text: '课程',
+                        icon: 'iconfont icon-kechengdingzhi',
+                        link: '/rule/syllabus',
+                        children: [
+                            {
+                                text: '目的地课程',
+                                link: '/rule/syllabus',
+                            },
+                            {
+                                text: '用户课程',
+                                link: '/rule/course-info',
+                            },
+                        ],
+                    },
+                    {
+                        text: '位置触发',
+                        icon: 'iconfont icon-weizhi',
+                        link: '/rule/location-mdd',
+                        children: [
+                            {
+                                text: '目的地',
+                                link: '/rule/location-mdd',
+                            },
+                            {
+                                text: 'Poi',
+                                link: '/rule/poi',
+                            },
+                        ],
+                    },
+                    {
+                        text: '沉默用户',
+                        icon: 'anticon anticon-user-delete',
+                        link: '/rule/recall',
+                    },
+                    {
+                        text: '意向目的地',
+                        icon: 'iconfont icon-78',
+                        link: '/rule/intent',
+                    },
+                    {
+                        text: '常驻目的地',
+                        icon: 'iconfont icon-yidiandiantubiao04',
+                        link: '/rule/habitat',
+                    },
+                    {
+                        text: '实验室',
+                        icon: 'iconfont icon-laboratorylab',
+                        link: '/rule/lab',
+                        children: [
+                            {
+                                text: '文案优选',
+                                link: '/task/lab/abtest',
+                            },
+                        ],
+                    },
+                ],
+            },
+            {
+                text: '统计',
+                group: true,
+                children: [
+                    {
+                        text: '推送统计',
+                        translate: '推送统计',
+                        icon: 'anticon anticon-dot-chart',
+                        link: '/statistics',
+                        children: [
+                            {
+                                text: '业务线',
+                                translate: '业务线',
+                                link: '/statistics/business',
+                            },
+                            {
+                                text: '订单',
+                                translate: '订单',
+                                link: '/statistics/order',
+                            },
+                            {
+                                text: '风铃数据',
+                                translate: '风铃数据',
+                                link: '/statistics/data-view',
+                            },
+                            {
+                                text: '通道质量',
+                                translate: '通道质量',
+                                link: '/statistics/channel',
+                            },
+                        ],
                     },
                 ],
             },
@@ -104,6 +215,11 @@ export class StartupService {
                         text: '弹药库',
                         link: '/content/warehouse',
                         icon: 'anticon anticon-shop',
+                    },
+                    {
+                        text: '优质内容库',
+                        icon: 'anticon anticon-like-o',
+                        link: '/message/high-quality',
                     },
                 ],
             },

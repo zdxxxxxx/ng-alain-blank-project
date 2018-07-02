@@ -23,11 +23,16 @@ registerLocaleData(zh);
 
 // @delon/form: JSON Schema form
 import { JsonSchemaModule } from '@shared/json-schema/json-schema.module';
+import { DataService } from '@core/utils/data.service';
 
 export function StartupServiceFactory(
     startupService: StartupService,
 ): Function {
     return () => startupService.load();
+}
+
+export function DataServiceFactory(dataService: DataService): Function {
+    return () => dataService.load();
 }
 
 @NgModule({
@@ -46,11 +51,11 @@ export function StartupServiceFactory(
     ],
     providers: [
         { provide: LOCALE_ID, useValue: 'zh-Hans' },
-        {
-            provide: HTTP_INTERCEPTORS,
-            useClass: SimpleInterceptor,
-            multi: true,
-        },
+        // {
+        //     provide: HTTP_INTERCEPTORS,
+        //     useClass: SimpleInterceptor,
+        //     multi: true,
+        // },
         {
             provide: HTTP_INTERCEPTORS,
             useClass: DefaultInterceptor,
@@ -62,6 +67,13 @@ export function StartupServiceFactory(
             provide: APP_INITIALIZER,
             useFactory: StartupServiceFactory,
             deps: [StartupService],
+            multi: true,
+        },
+        DataService,
+        {
+            provide: APP_INITIALIZER,
+            useFactory: DataServiceFactory,
+            deps: [DataService],
             multi: true,
         },
     ],

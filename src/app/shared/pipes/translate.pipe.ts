@@ -10,18 +10,27 @@ export class TranslatePipe implements PipeTransform {
         modal_cancel: '关闭量',
         open: '打开量',
         rate_open: '打开率',
-        course_type_1: '旅行中',
-        course_type_2: '出发前',
-        course_type_3: '机票预订',
-        course_type_4: '新用户课程',
-        course_type_5: '沉默用户课程',
-        course_type_6: '搜索目的地触发',
-        course_type_7: 'poi浏览触发',
+        course_type: {
+            1: '旅行中',
+            2: '出发前',
+            3: '机票预订',
+            4: '新用户课程',
+            5: '沉默用户课程',
+            6: '搜索目的地触发',
+            7: 'poi浏览触发',
+            recall: '沉默用户',
+            intent: '意向目的地',
+            habitat: '常驻目的地',
+        },
     };
 
     constructor() {}
 
     transform(value: string, args?: any): string {
-        return this.map[value];
+        if (args && this.map[args]) {
+            return this.map[args][value] || '';
+        } else {
+            return this.map[value] || '';
+        }
     }
 }

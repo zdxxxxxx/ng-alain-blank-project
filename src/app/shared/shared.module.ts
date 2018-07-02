@@ -17,6 +17,7 @@ import { EmojiPickerComponent } from '@shared/emoji-picker/emoji-picker.componen
 import { PIPES } from './pipes/index';
 import { CustomFileUploadComponent } from '@shared/custom-file-upload/custom-file-upload.component';
 import { FileUploadModule } from 'ng2-file-upload';
+import { SelectTagComponent } from '@shared/select-tag/select-tag.component';
 
 const THIRDMODULES = [NgZorroAntdModule, CountdownModule, FileUploadModule];
 // endregion
@@ -27,6 +28,7 @@ const COMPONENTS = [
     DevicePreviewComponent,
     EmojiPickerComponent,
     CustomFileUploadComponent,
+    SelectTagComponent,
 ];
 const DIRECTIVES = [];
 

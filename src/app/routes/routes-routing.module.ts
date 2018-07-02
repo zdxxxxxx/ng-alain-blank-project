@@ -34,11 +34,10 @@ const routes: Routes = [
                 path: 'content',
                 loadChildren: './content/content.module#ContentModule',
             },
-            // 业务子模块
-            // {
-            //     path: 'test',
-            //     loadChildren: './test/test.module#TestModule',
-            // },
+            {
+                path: 'rule',
+                loadChildren: './rule/rule.module#RuleModule',
+            },
         ],
     },
     // 全屏布局

@@ -1,0 +1,12 @@
+<div nz-row nzType="flex" nzAlign="middle" class="select-tag-contain">
+    <div nz-col class="title">{{title}}:</div>
+    <div nz-col class="items">
+        <nz-tag
+            nzMode="checkable"
+            *ngFor="let option of options"
+            [nzChecked]="option.checked"
+            (nzCheckedChange)="handleCheck(option,$event)">
+            <span style="font-size: 12px">{{option.name}}</span>
+        </nz-tag>
+    </div>
+</div>

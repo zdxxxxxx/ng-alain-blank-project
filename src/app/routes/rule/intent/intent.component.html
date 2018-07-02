@@ -1,0 +1,309 @@
+<div style="height: 24px"></div>
+<div class="contents-body" [ngStyle]="{height:bodyHeight+'px'}">
+        <div nz-row [nzGutter]="8" style="height: 100%">
+                <div nz-col nzSpan="4" style="height: 100%">
+                        <div class="contents-left">
+                                <div nz-row [nzType]="'flex'" nzAlign="middle" class="title">
+                                        <div nz-col [nzSpan]="8">目的地:</div>
+                                        <div nz-col [nzSpan]="14">
+                                                <input
+                                                        nz-input
+                                                        nzSize="small"
+                                                        placeholder="输入目的地筛选"
+                                                        [(ngModel)]="current_mdd"
+                                                        (ngModelChange)="filterMdd($event)"
+                                                />
+                                        </div>
+                                </div>
+                                <div class="lb">
+                                        <div style="height: 100%;overflow-y: scroll">
+                                                <nz-spin [nzSpinning]="loadingMdd">
+                                                        <div *ngIf="!options.length"
+                                                                 style="text-align: center;padding: 10px;font-size: 12px;color: rgba(0,0,0,.5)">
+                                                                暂无数据
+                                                        </div>
+                                                        <div nz-row (click)="selectOption(option,options)" class="lb-item "
+                                                                 [ngClass]="option.active?'lb-item-active':''"
+                                                                 *ngFor="let option of options">
+                                                                <div nz-col nzSpan="20">
+                                                                        <i class="anticon {{option.icon}} icon-active" style="margin-right: 5px; "></i>
+                                                                        <span>{{option.name}}</span>
+                                                                </div>
+                                                                <div nz-col nzSpan="4" class="icon-btn" style="text-align: right;padding-right: 10px">
+                                                                        <i *ngIf="option.loading"
+                                                                             class="anticon anticon-loading anticon-spin" style="font-size: 12px"></i>
+                                                                        <i *ngIf="!option.loading" class="anticon anticon-caret-right"
+                                                                             style="font-size: 12px"></i>
+                                                                </div>
+                                                        </div>
+                                                </nz-spin>
+                                        </div>
+                                </div>
+                        </div>
+                </div>
+                <div nz-col nzSpan="20" style="height: 100%">
+                        <div class="contents-right">
+                                <div class="tool-bar" nz-row nzType="flex" nzAlign="middle" nzJustify="space-between">
+                                        <select-tag [(selected)]="selected" [mode]="'multiple'" [options]="contentTypes"
+                                                                (selectedChange)="selectedChange()"
+                                                                [title]="'内容类型'"></select-tag>
+                                        <button nz-button class="add-btn" style="height: 27px;line-height: 1"
+                                                        (click)="showActionModal('A',null)" [nzType]="'primary'"><i
+                                                class="anticon anticon-plus"></i></button>
+                                </div>
+                                <div class="rb">
+                                        <div style="height: 100%;overflow-y: scroll" #scrollDiv>
+                                                <nz-spin [nzSpinning]="loading">
+                                                        <div style="min-height: 50px">
+                                                                <div *ngIf="!data.length" style="text-align: center;padding: 10px;">
+                                                                        <span style="color: rgba(0, 0, 0, 0.43)">没有数据</span>
+                                                                </div>
+                                                                <nz-list
+                                                                        [nzDataSource]="data"
+                                                                        [nzItemLayout]="'vertical'"
+                                                                        [nzRenderItem]="item">
+                                                                        <ng-template #item let-item let-index="index">
+                                                                                <nz-list-item [nzContent]="content"
+                                                                                                            [nzActions]="[editAction,delAction,linkAction1,linkAction2,popAction,unpopAction]"
+                                                                                >
+                                                                                        <ng-template #editAction>
+                                                                                                <a (click)="showActionModal('M',item)" style="font-size: 12px"><i
+                                                                                                        class="anticon anticon-edit"></i></a>
+                                                                                        </ng-template>
+                                                                                        <ng-template #delAction>
+                                                                                                <nz-popconfirm [nzTitle]="'确定要移除吗？'"
+                                                                                                                             (nzOnConfirm)="deleteMessage(item)">
+                                                                                                        <a nz-popconfirm style="font-size: 12px"><i
+                                                                                                                class="anticon anticon-delete"></i></a>
+                                                                                                </nz-popconfirm>
+                                                                                        </ng-template>
+                                                                                        <ng-template #linkAction1>
+                                                                                                <a [href]="item.stat_url" target="_blank" style="font-size: 12px">
+                                                                                                        7日打开率
+                                                                                                </a>
+                                                                                        </ng-template>
+                                                                                        <ng-template #linkAction2>
+                                                                                                <a [href]="item.url" target="_blank" style="font-size: 12px">
+                                                                                                        落地页
+                                                                                                </a>
+                                                                                        </ng-template>
+                                                                                        <ng-template #popAction>
+                                                                                                <nz-popconfirm [nzTitle]="'确定要置顶吗？'"
+                                                                                                                             (nzOnConfirm)="popToFirst(item.id,true)">
+                                                                                                        <a nz-popconfirm style="font-size: 12px">置顶</a>
+                                                                                                </nz-popconfirm>
+                                                                                        </ng-template>
+                                                                                        <ng-template #unpopAction>
+                                                                                                <nz-popconfirm [nzTitle]="'确定要取消置顶吗？'"
+                                                                                                                             (nzOnConfirm)="popToFirst(item.id,false)">
+                                                                                                        <a nz-popconfirm style="font-size: 12px">取消置顶</a>
+                                                                                                </nz-popconfirm>
+                                                                                        </ng-template>
+
+                                                                                        <ng-template #content>
+                                                                                                <div nz-row style="margin-bottom: 5px" nzType="flex" nzAlign="middle">
+                                                                                                        <nz-col>
+                                                                                                                <span
+                                                                                                                        style="font-size: 16px;font-weight: bold;margin-right: 10px">#{{index}}</span>
+                                                                                                        </nz-col>
+                                                                                                        <nz-col>
+                                                                                                                <nz-tag *ngIf="item.top==1" [nzColor]="'red'">已置顶</nz-tag>
+                                                                                                        </nz-col>
+                                                                                                </div>
+                                                                                                <div nz-row nzType="flex" [nzAlign]="'middle'" [nzGutter]="8">
+                                                                                                        <div nz-col style="display: inline-block">
+                                                                                                                <device-preview
+                                                                                                                        [data]="{
+                                                                                                                                app:'马蜂窝旅游',
+                                                                                                                                title:item.msg_title,
+                                                                                                                                content:item.msg_content,
+                                                                                                                                img:item.att_file_url
+                                                                                                                        }"
+                                                                                                                        [part]="true"
+                                                                                                                >
+                                                                                                                </device-preview>
+                                                                                                        </div>
+                                                                                                        <div nz-col
+                                                                                                                 style="display: inline-block;width: 160px;font-size: 12px">
+                                                                                                                <div nz-row [nzGutter]="8">
+                                                                                                                        <div nz-col nzSpan="24" *ngIf="item.id">
+                                                                                                                                <nz-tooltip [nzTitle]="'弹药ID'" [nzPlacement]="'top'">
+                                                                                                                                        <span class="anticon"
+                                                                                                                                                    nz-tooltip># {{item.id}}</span>
+                                                                                                                                </nz-tooltip>
+                                                                                                                        </div>
+                                                                                                                        <div nz-col nzSpan="24" *ngIf="item.creator">
+                                                                                                                                <nz-tooltip [nzTitle]="'创建人'" [nzPlacement]="'top'">
+                                                                                                                                         <span nz-tooltip>
+                                                                                                                                                 <i class="anticon anticon-user"></i>
+                                                                                                                                                {{item.creator}}
+                                                                                                                                         </span>
+                                                                                                                                </nz-tooltip>
+                                                                                                                        </div>
+                                                                                                                        <div nz-col nzSpan="24" *ngIf="item.content_type">
+                                                                                                                                <nz-tooltip [nzTitle]="'标签'" [nzPlacement]="'top'">
+                                                                                                                                        <i class="anticon anticon-tags-o" nz-tooltip></i>
+                                                                                                                                </nz-tooltip>
+                                                                                                                                <nz-tag [nzColor]="'green'">
+                                                                                                                                <span
+                                                                                                                                        style="font-size: 12px">{{item.content_type_name}}</span>
+                                                                                                                                </nz-tag>
+                                                                                                                        </div>
+                                                                                                                        <div nz-col nzSpan="24"
+                                                                                                                                 *ngIf="item.mdd_id">
+                                                                                                                                <nz-tooltip [nzTitle]="'目的地'" [nzPlacement]="'top'">
+                                                                                                                                        <i class="anticon anticon-environment-o"
+                                                                                                                                             nz-tooltip></i>
+                                                                                                                                </nz-tooltip>
+                                                                                                                                <nz-tag [nzColor]="'blue'">
+                                                                                                                                        <span style="font-size: 12px">{{item.mdd_name}}({{item.mdd_id}})</span>
+                                                                                                                                </nz-tag>
+                                                                                                                        </div>
+                                                                                                                        <div nz-col nzSpan="24">
+                                                                                                                                <nz-tooltip [nzTitle]="'创建时间'" [nzPlacement]="'top'">
+                                                                                                                        <span nz-tooltip>
+                                                                                                                                <i class="anticon anticon-clock-circle-o"></i>
+                                                                                                                                {{item.ctime}}
+                                                                                                                        </span>
+                                                                                                                                </nz-tooltip>
+                                                                                                                        </div>
+                                                                                                                        <div nz-col nzSpan="24">
+                                                                                                                                <nz-tooltip [nzTitle]="'生效时间范围'" [nzPlacement]="'top'">
+                                                                                                                        <span nz-tooltip>
+                                                                                                                                <i class="anticon anticon-clock-circle"></i>
+                                                                                                                                <span *ngIf="item.valid_start_time==0">长期</span>
+                                                                                                                                <span *ngIf="!item.valid_start_time==0">{{item.valid_start_time*1000|_date:'YYYY/MM/DD'}} ~ {{item.valid_end_time*1000|_date:'YYYY/MM/DD'}}</span>
+                                                                                                                        </span>
+                                                                                                                                </nz-tooltip>
+                                                                                                                        </div>
+                                                                                                                        <div nz-col nzSpan="24">
+                                                                                                                <span *ngIf="item.rate" style="font-size: 12px;color:red">
+                                                                                                                        <span>打开率:</span>
+                                                                                                                        <span>{{(item.rate*100).toFixed(2)+'%'}}</span>
+                                                                                                                        <a [href]="goStat(item)" target="_blank">
+                                                                                                                                <i class="anticon anticon-link"></i>
+                                                                                                                        </a>
+                                                                                                                </span>
+                                                                                                                        </div>
+                                                                                                                </div>
+                                                                                                        </div>
+                                                                                                </div>
+                                                                                        </ng-template>
+                                                                                </nz-list-item>
+                                                                        </ng-template>
+                                                                </nz-list>
+                                                        </div>
+                                                </nz-spin>
+                                        </div>
+                                </div>
+                                <nz-back-top [nzTarget]="scrollDiv" style="bottom:100px" [nzVisibilityHeight]="1000"></nz-back-top>
+                        </div>
+                </div>
+        </div>
+</div>
+
+<nz-modal [nzVisible]="actionModalVisible"
+                    style="position: absolute;right: 0;"
+                    [nzTitle]="(modalType=='A'?'添加':'修改')+'消息'"
+                    [nzContent]="actionModalContent"
+                    (nzOnCancel)="handleCancel()"
+                    (nzOnOk)="handleActionOk()"
+                    [nzWidth]="600" [nzOkLoading]="submitLoading" [nzMaskClosable]="false"></nz-modal>
+<ng-template #actionModalContent>
+        <form nz-form [formGroup]="validateForm">
+                <nz-form-item>
+                        <nz-form-label [nzSm]="6">标题</nz-form-label>
+                        <nz-form-control [nzSm]="14">
+                                <input formControlName="msg_title" nz-input placeholder="请输入标题"/>
+                                <nz-form-explain
+                                        *ngIf="(getFormControl('msg_title').dirty || getFormControl('msg_title').touched)           && getFormControl('msg_title').hasError('required')">
+                                        请输入标题
+                                </nz-form-explain>
+                        </nz-form-control>
+                </nz-form-item>
+                <nz-form-item>
+                        <nz-form-label [nzSm]="6">内容</nz-form-label>
+                        <nz-form-control [nzSm]="14" [nzXs]="20">
+                                <textarea nzType="textarea" formControlName="msg_content" nz-input placeholder="请输入内容"></textarea>
+                                <nz-form-explain
+                                        *ngIf="(getFormControl('msg_content').dirty || getFormControl('msg_content').touched)           && getFormControl('msg_content').hasError('required')">
+                                        请输入内容
+                                </nz-form-explain>
+                        </nz-form-control>
+                        <nz-col nzOffset="1" [nzSm]="3" [nzXs]="3">
+                                <emoji-picker (selected)="selectEmoji($event)"></emoji-picker>
+                        </nz-col>
+                </nz-form-item>
+                <nz-form-item>
+                        <nz-form-label [nzSm]="6">url</nz-form-label>
+                        <nz-form-control [nzSm]="14">
+                                <input formControlName="url" nz-input placeholder="请输入url"/>
+                                <nz-form-explain
+                                        *ngIf="(getFormControl('url').dirty || getFormControl('url').touched)           && getFormControl('url').hasError('required')">
+                                        请输入url
+                                </nz-form-explain>
+                        </nz-form-control>
+                </nz-form-item>
+                <nz-form-item>
+                        <nz-form-label [nzSm]="6">图片</nz-form-label>
+                        <nz-form-control [nzSm]="14">
+                                <nz-row nzType="flex" nzAlign="middle">
+                                        <nz-col [nzSpan]="16">
+                                                <input formControlName="att_file" nz-input placeholder="消息图片路径"/>
+                                        </nz-col>
+                                        <nz-col [nzMd]="{span:6,offset:1}">
+                                                <custom-file-upload [mTitle]="'上传图片'" [url]="'/interface/FileUploader/upload?type=att_file'"
+                                                                                        [accept]="'image/png,image/jpeg,image/jpg'"
+                                                                                        (uploaded)="uploadComplete($event,'att_file')"></custom-file-upload>
+                                        </nz-col>
+                                </nz-row>
+                        </nz-form-control>
+                </nz-form-item>
+                <nz-form-item>
+                        <nz-form-label [nzSm]="6">内容类型</nz-form-label>
+                        <nz-form-control [nzSm]="14">
+                                <nz-select [nzPlaceHolder]="'请选择内容类型'" formControlName="content_type" [nzNotFoundContent]="'无法找到'">
+                                        <nz-option *ngFor="let option of contentTypeOptions" [nzLabel]="option.description"
+                                                             [nzValue]="option.key"></nz-option>
+                                </nz-select>
+                                <nz-form-explain
+                                        *ngIf="(getFormControl('content_type').dirty || getFormControl('content_type').touched)           && getFormControl('content_type').hasError('required')">
+                                        请选择内容类型
+                                </nz-form-explain>
+                        </nz-form-control>
+                </nz-form-item>
+                <nz-form-item>
+                        <nz-form-label [nzSm]="6" [nzXs]="24">目的地</nz-form-label>
+                        <nz-form-control [nzSm]="14" [nzXs]="24">
+                                <nz-select [nzServerSearch]="true" formControlName="mdd_select" nzAllowClear
+                                                     [nzPlaceHolder]="'请输入目的地名称'"
+                                                     [nzShowSearch]="true" (nzOnSearch)="fetchMdd($event)" [nzNotFoundContent]="'未找到目的地'">
+                                        <nz-option *ngFor="let i of searchOptions" [nzLabel]="i.name+'('+i.id+')'"
+                                                             [nzValue]="i"></nz-option>
+                                </nz-select>
+                                <nz-form-explain
+                                        *ngIf="(getFormControl('mdd_select').dirty || getFormControl('mdd_select').touched)           && getFormControl('mdd_select').hasError('required')">
+                                        请输入目的地
+                                </nz-form-explain>
+                        </nz-form-control>
+                </nz-form-item>
+                <nz-form-item>
+                        <nz-form-label [nzSm]="6">生效日期</nz-form-label>
+                        <nz-form-control [nzSm]="14">
+                                <nz-switch [nzSize]="'small'" formControlName="has_time_range"></nz-switch>
+                        </nz-form-control>
+                        <div *ngIf="validateForm.value.has_time_range">
+                                <nz-form-control [nzOffset]="6" [nzSm]="7">
+                                        <nz-date-picker [nzAllowClear]="false" formControlName="start" style="width: 100%;"
+                                                                        [nzFormat]="'YYYY-MM-DD'" [nzPlaceHolder]="'起始时间'"
+                                                                        [nzDisabledDate]="disabledStartDate"></nz-date-picker>
+                                </nz-form-control>
+                                <nz-form-control [nzSm]="7" nzOffset="1">
+                                        <nz-date-picker [nzAllowClear]="false" formControlName="end" style="width: 100%;"
+                                                                        [nzFormat]="'YYYY-MM-DD'" [nzPlaceHolder]="'结束时间'"
+                                                                        [nzDisabledDate]="disabledEndDate"></nz-date-picker>
+                                </nz-form-control>
+                        </div>
+                </nz-form-item>
+        </form>
+</ng-template>

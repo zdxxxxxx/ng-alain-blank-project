@@ -24,8 +24,8 @@
                                                         *ngFor="let key of getKeys()">
                                                 <span>{{keyMap[key]}}:</span>
                                                 <span *ngFor="let item of filterView[key]">
-                                                        {{item.checked?item.name+'，':''}}
-                                                </span>
+                                                                                                                {{item.checked?item.name+'，':''}}
+                                                                                                </span>
                                         </nz-tag>
                                 </div>
                                 <div nz-col class="filter-action">
@@ -76,6 +76,21 @@
                                         </div>
                                         <div nz-col [nzSpan]="2" class="filter-action">
 
+                                        </div>
+                                </div>
+                                <div nz-row class="filter-row" [nzType]="'flex'" [nzAlign]="'middle'" [nzJustify]="'start'">
+                                        <div nz-col class="filter-title">
+                                                课程类型：
+                                        </div>
+                                        <div nz-col [nzSpan]="20">
+                                                <nz-tag
+                                                        nzMode="checkable"
+                                                        *ngFor="let option of filterView.courseType"
+                                                        [nzChecked]="option.checked" (nzCheckedChange)="handleCheck(option,'courseType',$event)">
+                                                        {{option.name}}
+                                                </nz-tag>
+                                        </div>
+                                        <div nz-col [nzSpan]="2" class="filter-action">
                                         </div>
                                 </div>
                                 <div nz-row class="filter-row last" [nzType]="'flex'" [nzAlign]="'middle'"
@@ -150,11 +165,11 @@
                                                                                 <div nz-col style="display: inline-block">
                                                                                         <device-preview
                                                                                                 [data]="{
-                                                                                                        app:'马蜂窝旅游',
-                                                                                                        title:item.msg_title,
-                                                                                                        content:item.msg_content,
-                                                                                                        img:item.att_file_url
-                                                                                                }"
+                                                                                                                                app:'马蜂窝旅游',
+                                                                                                                                title:item.msg_title,
+                                                                                                                                content:item.msg_content,
+                                                                                                                                img:item.att_file_url
+                                                                                                                }"
                                                                                                 [part]="true"
                                                                                         >
                                                                                         </device-preview>
@@ -181,24 +196,25 @@
                                                                                 <div nz-col nzSpan="12">
                                                                                         <nz-tooltip [nzTitle]="'生效时间范围'" [nzPlacement]="'top'">
                                                                                                 <span nz-tooltip>
-                                                                                                        <i class="anticon anticon-clock-circle"></i>
-                                                                                                        <span
-                                                                                                                *ngIf="item.valid_start_time==0">长期
-                                                                                                        </span>
-                                                                                                        <span
-                                                                                                                *ngIf="!item.valid_start_time==0">{{getDate(item.valid_start_time)}} ~ {{getDate(item.valid_end_time)}}
-                                                                                                        </span>
+                                                                                                                <i class="anticon anticon-clock-circle"></i>
+                                                                                                                <span
+                                                                                                                        *ngIf="item.valid_start_time==0">长期
+                                                                                                                </span>
+                                                                                                                <span
+                                                                                                                        *ngIf="!item.valid_start_time==0">{{item.valid_start_time|_date:'YYYY/MM/DD'}} ~ {{item.valid_end_time|_date:'YYYY/MM/DD'}}
+                                                                                                                </span>
                                                                                                 </span>
                                                                                         </nz-tooltip>
                                                                                 </div>
                                                                                 <div nz-col nzSpan="12" *ngIf="item.usage_type.length">
                                                                                         <nz-tooltip [nzTitle]="'使用场景'" [nzPlacement]="'top'">
                                                                                                 <span nz-tooltip>
-                                                                                                        <i class="anticon anticon-notification"></i>
-                                                                                                        <span style="margin-right: 5px"
-                                                                                                                    *ngFor="let usage of getUsageType(item.usage_type)">
-                                                                                                                {{usage.name}}
-                                                                                                        </span>
+                                                                                                                <i class="anticon anticon-notification"></i>
+                                                                                                                <span
+                                                                                                                        style="margin-right: 5px"
+                                                                                                                        *ngFor="let usage of item.usage_type">
+                                                                                                                                {{usage.name|_translate:'course_type'}}
+                                                                                                                </span>
                                                                                                 </span>
                                                                                         </nz-tooltip>
                                                                                 </div>
@@ -212,13 +228,11 @@
                                                                                                                     style="margin-left: 5px"
                                                                                                 ></nz-badge>
                                                                                                 <span>
-                                                                                                        {{'course_type_'+lesson.type|_translate}} - 课程id:{{lesson.id}} - {{lesson.description}}
+                                                                                                                {{lesson.type|_translate:'course_type'}} - 课程id:{{lesson.id}} - {{lesson.description}}
                                                                                                 </span>
                                                                                         </div>
                                                                                         <div style="padding-left: 16px">
                                                                                                 <span style="color: red;" *ngIf="lesson.open_rate!==null">周打开率:{{(lesson.open_rate*100).toFixed(2) +'%'}} -</span>
-                                                                                                <span
-                                                                                                        [ngStyle]="{color:getTimeDiff(lesson.valid_timestamp_ending)<=0?'red':'#000000'}">{{getTimeDiff(lesson.valid_timestamp_ending)<=0?'已过期':getTimeDiff(lesson.valid_timestamp_ending)+'天后过期'}}</span>
                                                                                         </div>
                                                                                 </div>
                                                                         </div>
@@ -265,7 +279,9 @@
                             style="position: absolute;right: 0;"
                             [nzTitle]="(modalType=='A'?'新增':'修改')+'弹药'"
                             [nzContent]="actionModalContent"
-                            (nzOnCancel)="handleCancel()" (nzOnOk)="handleActionOk()" [nzWidth]="600"
+                            (nzOnCancel)="handleCancel()"
+                            (nzOnOk)="handleActionOk()"
+                            [nzWidth]="600"
                             [nzOkLoading]="submitLoading"
                             [nzMaskClosable]="false"
         >
@@ -308,18 +324,19 @@
                         <nz-form-item>
                                 <nz-form-label [nzSm]="6">图片</nz-form-label>
                                 <nz-form-control [nzSm]="14">
-                                        <nz-col [nzSpan]="16">
-                                                <input formControlName="att_file" nz-input placeholder="图片路径"/>
-                                        </nz-col>
-                                        <nz-col [nzMd]="{span:6,offset:1}">
-                                                <custom-file-upload
-                                                        [mTitle]="'上传图片'"
-                                                        [url]="'/interface/FileUploader/upload?type=att_file'"
-                                                        [accept]="'image/png,image/jpeg,image/jpg'"
-                                                        (uploaded)="uploadComplete($event,'att_file')">
-
-                                                </custom-file-upload>
-                                        </nz-col>
+                                        <nz-row nzType="flex" nzAlign="middle">
+                                                <nz-col [nzSpan]="16">
+                                                        <input formControlName="att_file" nz-input placeholder="图片路径"/>
+                                                </nz-col>
+                                                <nz-col [nzMd]="{span:6,offset:1}">
+                                                        <custom-file-upload
+                                                                [mTitle]="'上传图片'"
+                                                                [url]="'/interface/FileUploader/upload?type=att_file'"
+                                                                [accept]="'image/png,image/jpeg,image/jpg'"
+                                                                (uploaded)="uploadComplete($event,'att_file')">
+                                                        </custom-file-upload>
+                                                </nz-col>
+                                        </nz-row>
                                 </nz-form-control>
                         </nz-form-item>
                         <nz-form-item>
@@ -339,7 +356,8 @@
                         <nz-form-item>
                                 <nz-form-label [nzSm]="6" [nzXs]="24">目的地</nz-form-label>
                                 <nz-form-control [nzSm]="14" [nzXs]="24">
-                                        <nz-select [nzServerSearch]="true" formControlName="mdd_select" nzAllowClear [nzPlaceHolder]="'请输入目的地名称'"
+                                        <nz-select [nzServerSearch]="true" formControlName="mdd_select" nzAllowClear
+                                                             [nzPlaceHolder]="'请输入目的地名称'"
                                                              [nzShowSearch]="true" (nzOnSearch)="fetchMdd($event)" [nzNotFoundContent]="'未找到目的地'">
                                                 <nz-option *ngFor="let i of searchOptions" [nzLabel]="i.name+'('+i.id+')'"
                                                                      [nzValue]="i"></nz-option>

@@ -34,4 +34,12 @@ export class DashboardComponent implements OnInit {
         this.ws.send('123');
         return;
     }
+
+    getTime() {
+        let a = 0;
+        for (let i = 0; i < 10000; i++) {
+            a++;
+        }
+        return a;
+    }
 }
