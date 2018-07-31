@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { _HttpClient } from '@delon/theme';
+import { Observable } from 'rxjs';
 
 @Component({
     selector: 'app-dashboard',
@@ -11,11 +12,27 @@ export class DashboardComponent implements OnInit {
     constructor(private http: _HttpClient) {}
 
     ngOnInit() {
-        this.initWebSocket();
+        const stream$ = Observable.create(observer => {
+            observer.next(1);
+            observer.next(2);
+            observer.error('err');
+            observer.complete();
+        });
+        stream$.subscribe(
+            data => {
+                console.log('Data', data);
+            },
+            err => {
+                console.log('Err', err);
+            },
+            data => {
+                console.log('complete', data);
+            },
+        );
     }
 
     initWebSocket() {
-        this.ws = new WebSocket('ws://127.0.0.1:8080/echo');
+        this.ws = new WebSocket('ws://localhost:8080/ws');
         this.ws.onopen = function(evt) {
             console.log(evt);
         };

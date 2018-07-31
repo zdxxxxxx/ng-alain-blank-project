@@ -1,4 +1,4 @@
-var target = "https://admin.zdx.ab";
+var target = "https://admin.zdxadmin.ab";
 
 const CONF = {
     "/app_theme/*": {
@@ -67,27 +67,27 @@ const CONF = {
         "changeOrigin": true
     },
     "/push-api/stat/*": {
-        "target": 'https://admin.zhoucc.ab',
+        "target": 'https://admin.zdxadmin.ab',
         "secure": false,
         "changeOrigin": true
     },
     "/push-api/material/*": {
-        "target": 'https://admin.zdx.ab',
+        "target": 'https://admin.zdxadmin.ab',
         "secure": false,
         "changeOrigin": true
     },
     "/push-api/order/*": {
-        "target": 'https://admin.zdx.ab',
+        "target": 'https://admin.zdxadmin.ab',
         "secure": false,
         "changeOrigin": true
     },
     "/push-api/task/*": {
-        "target": 'https://admin.zdx.ab',
+        "target": 'https://admin.zdxadmin.ab',
         "secure": false,
         "changeOrigin": true
     },
     "/push-api/auth/*": {
-        "target": 'https://admin.zdx.ab',
+        "target": 'https://admin.zdxadmin.ab',
         "secure": false,
         "changeOrigin": true
     },

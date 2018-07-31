@@ -1,9 +1,7 @@
-import { map } from 'rxjs/operators';
-
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { _HttpClient } from '@delon/theme';
-import { NzMessageService, NzNotificationService } from 'ng-zorro-antd';
+import { NzMessageService } from 'ng-zorro-antd';
 import { HttpHeaders } from '@angular/common/http';
 import { isObject } from 'util';
 
@@ -62,25 +60,33 @@ export class HttpService {
         return url;
     }
 
-    private handleStatusOk(data: any): any | Observable<any> {
-        if (!data.hasOwnProperty('code')) {
-            return data;
-        }
-        if (data.code === 0) {
-            return data.data;
-        }
-        if (data.code !== 0) {
-            this.nzMsg.create('error', data.message);
-            return Observable.create(ob => {
-                ob.error(data);
-            });
-        }
+    private intercept(request: any): Observable<any> {
+        return Observable.create(observer => {
+            request.subscribe(
+                data => {
+                    if (!data.hasOwnProperty('code')) {
+                        return observer.next(data);
+                    }
+                    if (data.code === 0) {
+                        return observer.next(data.data);
+                    }
+                    if (data.code !== 0) {
+                        this.nzMsg.create('error', data.message || data.msg);
+                        return observer.complete();
+                    }
+                },
+                err => {
+                    return observer.error(err);
+                },
+                () => {
+                    return observer.complete();
+                },
+            );
+        });
     }
 
     get(url: string, params?: any): Observable<any> {
-        return this.http
-            .get(url, params)
-            .pipe(map((data: any) => this.handleStatusOk(data)));
+        return this.intercept(this.http.get(url, params));
     }
 
     postForm(url: string, body: any, params?: any): Observable<any> {
@@ -93,8 +99,6 @@ export class HttpService {
             headers,
         };
         body = HttpService.parseBody(body);
-        return this.http
-            .post(url, body, params, options)
-            .pipe(map((data: any) => this.handleStatusOk(data)));
+        return this.intercept(this.http.post(url, body, params, options));
     }
 }

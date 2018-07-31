@@ -6,8 +6,8 @@ import { NzMessageService } from 'ng-zorro-antd';
 import * as fns from 'date-fns';
 import { Location } from '@angular/common';
 import { Router } from '@angular/router';
-import { ReuseTabService } from '@delon/abc';
 import { CommonUtilsService } from '@core/utils/common-utils.service';
+import { DataService } from '@core/utils/data.service';
 
 @Component({
     selector: 'app-warehouse',
@@ -197,26 +197,24 @@ export class WarehouseComponent implements OnInit {
         private location: Location,
         private router: Router,
         private http: HttpService,
+        private staticData: DataService,
     ) {}
 
     ngOnInit() {
         this.initForm();
-        this.api.getTags().subscribe(
-            data => {
-                this.contentTypeOptions = data[0].options;
-                this.filterView.contentType = data[0].options.map(item => {
-                    return {
-                        name: item.description,
-                        value: item.key,
-                        checked: false,
-                    };
-                });
-                this.getData();
-            },
-            err => {
-                console.log('error', err);
-            },
+        this.contentTypeOptions = this.staticData.getStaticData(
+            'CONTENT_TYPES',
         );
+        this.filterView.contentType = this.staticData
+            .getStaticData('CONTENT_TYPES')
+            .map(item => {
+                return {
+                    name: item.description,
+                    value: item.key,
+                    checked: false,
+                };
+            });
+        this.getData();
     }
 
     getData() {
@@ -355,12 +353,6 @@ export class WarehouseComponent implements OnInit {
 
     getFormControl(name) {
         return this.validateForm.controls[name];
-    }
-
-    formatTag(content_type) {
-        return this.contentTypeOptions.filter(
-            item => item.key === content_type,
-        )[0];
     }
 
     buildUrl(str) {

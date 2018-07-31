@@ -121,7 +121,7 @@ export class DataService {
                 }),
             )
             .subscribe({
-                next: data => {
+                next: (data: any) => {
                     data.forEach(d => {
                         this.data = Object.assign(this.data, d);
                     });

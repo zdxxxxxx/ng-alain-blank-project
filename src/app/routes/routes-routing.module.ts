@@ -34,10 +34,6 @@ const routes: Routes = [
                 path: 'content',
                 loadChildren: './content/content.module#ContentModule',
             },
-            {
-                path: 'rule',
-                loadChildren: './rule/rule.module#RuleModule',
-            },
         ],
     },
     // 全屏布局

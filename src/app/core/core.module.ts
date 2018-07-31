@@ -2,10 +2,10 @@ import { NgModule, Optional, SkipSelf } from '@angular/core';
 import { throwIfAlreadyLoaded } from './module-import-guard';
 import { HttpService } from '@core/net/http.service';
 import { CommonUtilsService } from '@core/utils/common-utils.service';
-import { FixHeightService } from '@core/utils/fix-height.service';
+import { StorageService } from '@core/utils/storage.service';
 
 @NgModule({
-    providers: [HttpService, CommonUtilsService, FixHeightService],
+    providers: [HttpService, CommonUtilsService, StorageService],
 })
 export class CoreModule {
     constructor(

@@ -18,8 +18,16 @@ import { PIPES } from './pipes/index';
 import { CustomFileUploadComponent } from '@shared/custom-file-upload/custom-file-upload.component';
 import { FileUploadModule } from 'ng2-file-upload';
 import { SelectTagComponent } from '@shared/select-tag/select-tag.component';
+import { FixHeightDirective } from '@shared/fix-height/fix-height.directive';
+import { InfiniteScrollModule } from 'ngx-infinite-scroll';
+import { CanvasFireworkDirective } from '@shared/canvas-firework/canvas-firework.directive';
 
-const THIRDMODULES = [NgZorroAntdModule, CountdownModule, FileUploadModule];
+const THIRDMODULES = [
+    NgZorroAntdModule,
+    CountdownModule,
+    FileUploadModule,
+    InfiniteScrollModule,
+];
 // endregion
 
 // region: your componets & directives
@@ -30,7 +38,7 @@ const COMPONENTS = [
     CustomFileUploadComponent,
     SelectTagComponent,
 ];
-const DIRECTIVES = [];
+const DIRECTIVES = [FixHeightDirective, CanvasFireworkDirective];
 
 // endregion
 
